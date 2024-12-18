@@ -87,6 +87,8 @@ class PhoneNumberFormatter {
         enteredNumber.startsWith(localCountryCode) &&
         !formattedNumber.startsWith(localCountryCode)) {
       formattedNumber = '$localCountryCode$formattedNumber';
+    } else if (isoCode != isoCodeCountryCenter) {
+      formattedNumber = '+$countryCode $formattedNumber';
     }
 
     return formattedNumber;
