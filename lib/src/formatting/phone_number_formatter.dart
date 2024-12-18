@@ -78,20 +78,49 @@ class PhoneNumberFormatter {
     String? localCountryCode = destinationMetadata.nationalPrefix;
 
     if (enteredNumber.startsWith("+")) {
-      formattedNumber = '+$countryCode $formattedNumber';
-    } else if (enteredNumber.startsWith("00")) {
-      formattedNumber = '00 $countryCode $formattedNumber';
-    } else if (enteredNumber.startsWith("001")) {
-      formattedNumber = '001 $countryCode $formattedNumber';
-    } else if (localCountryCode != null &&
-        enteredNumber.startsWith(localCountryCode) &&
+      return '+$countryCode $formattedNumber';
+    }
+    if (enteredNumber.startsWith("00")) {
+      if (enteredNumber.startsWith("001")) {
+        return '001 $countryCode $formattedNumber';
+      } else {
+        return '00 $countryCode $formattedNumber';
+      }
+    }
+    if (localCountryCode != null &&
         !formattedNumber.startsWith(localCountryCode)) {
-      formattedNumber = '$localCountryCode$formattedNumber';
-    } else if (isoCode != isoCodeCountryCenter) {
-      formattedNumber = '+$countryCode $formattedNumber';
+      return '$localCountryCode$formattedNumber';
     }
 
     return formattedNumber;
+  }
+
+  static String formatInnitSummitPhoneNumber(
+      {required String nsn,
+      required IsoCode isoCode,
+      required IsoCode isoCodeCountryCenter,
+      required String countryCode}) {
+    if (nsn.isEmpty) {
+      return nsn;
+    }
+
+    final formatType = isoCode == isoCodeCountryCenter
+        ? NsnFormat.national
+        : NsnFormat.international;
+
+    String formattedNumber = formatNsn(nsn, isoCode, formatType);
+    final PhoneMetadata destinationMetadata =
+        MetadataFinder.findMetadataForIsoCode(isoCode);
+    String? localCountryCode = destinationMetadata.nationalPrefix;
+
+    if (isoCode == isoCodeCountryCenter) {
+      if (localCountryCode != null) {
+        return '$localCountryCode$formattedNumber';
+      } else {
+        return formattedNumber;
+      }
+    }
+    return '+$countryCode $formattedNumber';
   }
 
   static String _removeMissingDigits(String formatted, String missingDigits) {

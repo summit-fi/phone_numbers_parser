@@ -75,6 +75,15 @@ class PhoneNumber {
         isoCodeCountryCenter: isoCodeCountryCenter,
         countryCode: countryCode,
       );
+
+  String formatInnitSummit(IsoCode isoCodeCountryCenter) =>
+      PhoneNumberFormatter.formatInnitSummitPhoneNumber(
+        nsn: nsn,
+        isoCode: isoCode,
+        isoCodeCountryCenter: isoCodeCountryCenter,
+        countryCode: countryCode,
+      );
+
   @Deprecated('Use [formatNsn] instead')
   String getFormattedNsn({IsoCode? isoCode}) => formatNsn(isoCode: isoCode);
 
