@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:phone_numbers_parser/src/metadata/metadata_finder.dart';
+import 'package:phone_numbers_parser/src/metadata/models/phone_metadata.dart';
 import 'package:phone_numbers_parser/src/parsers/_national_number_parser.dart';
 import 'package:phone_numbers_parser/src/regex/match_entirely_extension.dart';
 
@@ -64,20 +65,28 @@ class PhoneNumberFormatter {
     if (nsn.isEmpty) {
       return nsn;
     }
-
+    if (enteredNumber.length < 4) {
+      return enteredNumber;
+    }
     final formatType = isoCode == isoCodeCountryCenter
         ? NsnFormat.national
         : NsnFormat.international;
 
     String formattedNumber = formatNsn(nsn, isoCode, formatType);
+    final PhoneMetadata destinationMetadata =
+        MetadataFinder.findMetadataForIsoCode(isoCode);
+    String? localCountryCode = destinationMetadata.nationalPrefix;
 
     if (enteredNumber.startsWith("+")) {
       formattedNumber = '+$countryCode $formattedNumber';
     } else if (enteredNumber.startsWith("00")) {
       formattedNumber = '00 $countryCode $formattedNumber';
-    } else if (enteredNumber.startsWith("0") &&
-        !formattedNumber.startsWith('0')) {
-      formattedNumber = '0 $formattedNumber';
+    } else if (enteredNumber.startsWith("001")) {
+      formattedNumber = '001 $countryCode $formattedNumber';
+    } else if (localCountryCode != null &&
+        enteredNumber.startsWith(localCountryCode) &&
+        !formattedNumber.startsWith(localCountryCode)) {
+      formattedNumber = '$localCountryCode$formattedNumber';
     }
 
     return formattedNumber;
