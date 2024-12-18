@@ -72,11 +72,12 @@ class PhoneNumberFormatter {
     String formattedNumber = formatNsn(nsn, isoCode, formatType);
 
     if (enteredNumber.startsWith("+")) {
-      formattedNumber = '+ $countryCode $formattedNumber';
+      formattedNumber = '+$countryCode $formattedNumber';
     } else if (enteredNumber.startsWith("00")) {
       formattedNumber = '00 $countryCode $formattedNumber';
-    } else if (enteredNumber.startsWith("0") && !formattedNumber.startsWith('0')) { 
-      formattedNumber = '0$countryCode $formattedNumber';
+    } else if (enteredNumber.startsWith("0") &&
+        !formattedNumber.startsWith('0')) {
+      formattedNumber = '0 $formattedNumber';
     }
 
     return formattedNumber;
