@@ -57,7 +57,7 @@ class PhoneNumberFormatter {
   }
 
   static String formatSummitPhoneNumber(
-      {required String enteredNumber,
+      {required String? enteredNumber,
       required String nsn,
       required IsoCode isoCode,
       required IsoCode isoCodeCountryCenter,
@@ -65,62 +65,56 @@ class PhoneNumberFormatter {
     if (nsn.isEmpty) {
       return nsn;
     }
-    if (enteredNumber.length < 4) {
-      return enteredNumber;
-    }
-    final formatType = isoCode == isoCodeCountryCenter
-        ? NsnFormat.national
-        : NsnFormat.international;
+    String formattedNumber = '';
+    if (enteredNumber == null) {
+      final formatType = isoCode == isoCodeCountryCenter
+          ? NsnFormat.national
+          : NsnFormat.international;
 
-    String formattedNumber = formatNsn(nsn, isoCode, formatType);
-    final PhoneMetadata destinationMetadata =
-        MetadataFinder.findMetadataForIsoCode(isoCode);
-    String? localCountryCode = destinationMetadata.nationalPrefix;
+      formattedNumber = formatNsn(nsn, isoCode, formatType);
+      final PhoneMetadata destinationMetadata =
+          MetadataFinder.findMetadataForIsoCode(isoCode);
+      String? localCountryCode = destinationMetadata.nationalPrefix;
 
-    if (enteredNumber.startsWith("+")) {
-      return '+$countryCode $formattedNumber';
-    }
-    if (enteredNumber.startsWith("00")) {
-      if (enteredNumber.startsWith("001")) {
-        return '001 $countryCode $formattedNumber';
+      if (isoCode != isoCodeCountryCenter) {
+        return '+$countryCode $formattedNumber';
       } else {
-        return '00 $countryCode $formattedNumber';
+        if (localCountryCode != null) {
+          return '$localCountryCode$formattedNumber';
+        }
+        return formattedNumber;
       }
-    }
-    if (localCountryCode != null &&
-        !formattedNumber.startsWith(localCountryCode)) {
-      return '$localCountryCode$formattedNumber';
+    } else {
+      if (enteredNumber.length < 4) {
+        return enteredNumber;
+      }
+
+      final formatType = isoCode == isoCodeCountryCenter
+          ? NsnFormat.national
+          : NsnFormat.international;
+
+      formattedNumber = formatNsn(nsn, isoCode, formatType);
+      final PhoneMetadata destinationMetadata =
+          MetadataFinder.findMetadataForIsoCode(isoCode);
+      String? localCountryCode = destinationMetadata.nationalPrefix;
+
+      if (enteredNumber.startsWith("+")) {
+        return '+$countryCode $formattedNumber';
+      }
+      if (enteredNumber.startsWith("00")) {
+        if (enteredNumber.startsWith("001")) {
+          return '001 $countryCode $formattedNumber';
+        } else {
+          return '00 $countryCode $formattedNumber';
+        }
+      }
+      if (localCountryCode != null &&
+          !formattedNumber.startsWith(localCountryCode)) {
+        formattedNumber = '$localCountryCode$formattedNumber';
+      }
     }
 
     return formattedNumber;
-  }
-
-  static String formatInnitSummitPhoneNumber(
-      {required String nsn,
-      required IsoCode isoCode,
-      required IsoCode isoCodeCountryCenter,
-      required String countryCode}) {
-    if (nsn.isEmpty) {
-      return nsn;
-    }
-
-    final formatType = isoCode == isoCodeCountryCenter
-        ? NsnFormat.national
-        : NsnFormat.international;
-
-    String formattedNumber = formatNsn(nsn, isoCode, formatType);
-    final PhoneMetadata destinationMetadata =
-        MetadataFinder.findMetadataForIsoCode(isoCode);
-    String? localCountryCode = destinationMetadata.nationalPrefix;
-
-    if (isoCode == isoCodeCountryCenter) {
-      if (localCountryCode != null) {
-        return '$localCountryCode$formattedNumber';
-      } else {
-        return formattedNumber;
-      }
-    }
-    return '+$countryCode $formattedNumber';
   }
 
   static String _removeMissingDigits(String formatted, String missingDigits) {

@@ -67,17 +67,12 @@ class PhoneNumber {
   String formatNsn({IsoCode? isoCode, NsnFormat format = NsnFormat.national}) =>
       PhoneNumberFormatter.formatNsn(nsn, isoCode ?? this.isoCode, format);
 
-  String formatSummit(String enteredNumber, IsoCode isoCodeCountryCenter) =>
+  String formatSummit(
+    String? enteredNumber,
+    IsoCode isoCodeCountryCenter,
+  ) =>
       PhoneNumberFormatter.formatSummitPhoneNumber(
         enteredNumber: enteredNumber,
-        nsn: nsn,
-        isoCode: isoCode,
-        isoCodeCountryCenter: isoCodeCountryCenter,
-        countryCode: countryCode,
-      );
-
-  String formatInnitSummit(IsoCode isoCodeCountryCenter) =>
-      PhoneNumberFormatter.formatInnitSummitPhoneNumber(
         nsn: nsn,
         isoCode: isoCode,
         isoCodeCountryCenter: isoCodeCountryCenter,
