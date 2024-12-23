@@ -60,14 +60,14 @@ class PhoneNumberFormatter {
       {required String? enteredNumber,
       required String nsn,
       required IsoCode isoCode,
-      required IsoCode isoCodeCountryCenter,
+      required IsoCode isoCodeCountryDestination,
       required String countryCode}) {
-    if (nsn.isEmpty) {
+    if (nsn.isEmpty ) {
       return nsn;
     }
     String formattedNumber = '';
     if (enteredNumber == null) {
-      final formatType = isoCode == isoCodeCountryCenter
+      final formatType = isoCode == isoCodeCountryDestination
           ? NsnFormat.national
           : NsnFormat.international;
 
@@ -76,7 +76,7 @@ class PhoneNumberFormatter {
           MetadataFinder.findMetadataForIsoCode(isoCode);
       String? localCountryCode = destinationMetadata.nationalPrefix;
 
-      if (isoCode != isoCodeCountryCenter) {
+      if (isoCode != isoCodeCountryDestination) {
         return '+$countryCode $formattedNumber';
       } else {
         if (localCountryCode != null) {
@@ -89,7 +89,7 @@ class PhoneNumberFormatter {
         return enteredNumber;
       }
 
-      final formatType = isoCode == isoCodeCountryCenter
+      final formatType = isoCode == isoCodeCountryDestination
           ? NsnFormat.national
           : NsnFormat.international;
 
