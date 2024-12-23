@@ -71,13 +71,15 @@ class PhoneNumber {
     String? enteredNumber,
     IsoCode isoCodeCountryCenter,
   ) =>
-      PhoneNumberFormatter.formatSummitPhoneNumber(
-        enteredNumber: enteredNumber,
-        nsn: nsn,
-        isoCode: isoCode,
-        isoCodeCountryCenter: isoCodeCountryCenter,
-        countryCode: countryCode,
-      );
+      isValid()
+          ? PhoneNumberFormatter.formatSummitPhoneNumber(
+              enteredNumber: enteredNumber,
+              nsn: nsn,
+              isoCode: isoCode,
+              isoCodeCountryDestination: isoCodeCountryCenter,
+              countryCode: countryCode,
+            )
+          : enteredNumber ?? nsn;
 
   @Deprecated('Use [formatNsn] instead')
   String getFormattedNsn({IsoCode? isoCode}) => formatNsn(isoCode: isoCode);
