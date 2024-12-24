@@ -2,6 +2,8 @@ import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:phone_numbers_parser/src/metadata/generated/metadata_examples_by_iso_code.dart';
 import 'package:test/test.dart';
 
+import 'phone_test_data.dart';
+
 void main() {
   group('PhoneNumber', () {
     group('parsing', () {
@@ -451,6 +453,241 @@ void main() {
       expect(format(testNumber), equals('261 15-532-5656'));
       testNumber = '54.9.261.5325.656';
       expect(format(testNumber), equals('261 15-532-5656'));
+      testNumber = '005492615325656';
+      expect(format(testNumber), equals('261 15-532-5656'));
     });
   });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.US)
+            .formatSummit(phoneNumber, IsoCode.US);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+    testNumber = '2';
+    expect(format(testNumber), equals('2'));
+    testNumber = '20';
+    expect(format(testNumber), equals('20'));
+    testNumber = '202';
+    expect(format(testNumber), equals('202'));
+    testNumber = '2025';
+    expect(format(testNumber), equals('1(202) 5'));
+    testNumber = '20255';
+    expect(format(testNumber), equals('1(202) 55'));
+    testNumber = '202555';
+    expect(format(testNumber), equals('1(202) 555'));
+    testNumber = '2025550';
+    expect(format(testNumber), equals('1(202) 555-0'));
+    testNumber = '20255501';
+    expect(format(testNumber), equals('1(202) 555-01'));
+    testNumber = '202555011';
+    expect(format(testNumber), equals('1(202) 555-011'));
+    testNumber = '2025550119';
+    expect(format(testNumber), equals('1(202) 555-0119'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.UA)
+            .formatSummit(phoneNumber, IsoCode.UA);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '0956582979';
+    expect(format(testNumber), equals('095 658 2979'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.UA)
+            .formatSummit(phoneNumber, IsoCode.UA);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '956582979';
+    expect(format(testNumber), equals('095 658 2979'));
+
+    testNumber = '0956582979';
+    expect(format(testNumber), equals('095 658 2979'));
+
+    testNumber = '+380956582979';
+    expect(format(testNumber), equals('+380 95 658 2979'));
+
+    testNumber = '95658';
+    expect(format(testNumber), equals('095 658'));
+
+    testNumber = '956582979';
+    expect(format(testNumber), equals('095 658 2979'));
+
+    testNumber = '00380956582979';
+    expect(format(testNumber), equals('00 380 95 658 2979'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.PL)
+            .formatSummit(phoneNumber, IsoCode.PL);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '699408105';
+    expect(format(testNumber), equals('699 408 105'));
+
+    testNumber = '+48699408105';
+    expect(format(testNumber), equals('+48 699 408 105'));
+
+    testNumber = '0048699408105';
+    expect(format(testNumber), equals('00 48 699 408 105'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.PL)
+            .formatSummit(phoneNumber, IsoCode.UA);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '699408105';
+    expect(format(testNumber), equals('699 408 105'));
+
+    testNumber = '+48699408105';
+    expect(format(testNumber), equals('+48 699 408 105'));
+
+    testNumber = '0048699408105';
+    expect(format(testNumber), equals('00 48 699 408 105'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.SE)
+            .formatSummit(null, IsoCode.SE);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '101629200';
+    expect(format(testNumber), equals('010-162 92 00'));
+    testNumber = '86582000';
+    expect(format(testNumber), equals('08-658 200 0'));
+    testNumber = '707904835';
+    expect(format(testNumber), equals('070-790 48 35'));
+    testNumber = '632923314';
+    expect(format(testNumber), equals('063-292 33 14'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.SE)
+            .formatSummit(phoneNumber, IsoCode.SE);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '101629200';
+    expect(format(testNumber), equals('010-162 92 00'));
+    testNumber = '86582000';
+    expect(format(testNumber), equals('08-658 200 0'));
+    testNumber = '707904835';
+    expect(format(testNumber), equals('070-790 48 35'));
+
+    testNumber = '+46101629200';
+    expect(format(testNumber), equals('+46 10-162 92 00'));
+    testNumber = '+4686582000';
+    expect(format(testNumber), equals('+46 8-658 200 0'));
+    testNumber = '+46707904835';
+    expect(format(testNumber), equals('+46 70-790 48 35'));
+
+    testNumber = '0046101629200';
+    expect(format(testNumber), equals('00 46 10-162 92 00'));
+    testNumber = '004686582000';
+    expect(format(testNumber), equals('00 46 8-658 200 0'));
+    testNumber = '0046707904835';
+    expect(format(testNumber), equals('00 46 70-790 48 35'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.CO)
+            .formatSummit(phoneNumber, IsoCode.CO);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '3203580474';
+    expect(format(testNumber), equals('0320 3580474'));
+    testNumber = '3203592452';
+    expect(format(testNumber), equals('0320 3592452'));
+    testNumber = '3222014101';
+    expect(format(testNumber), equals('0322 2014101'));
+
+    testNumber = '+573203580474';
+    expect(format(testNumber), equals('+57 320 3580474'));
+    testNumber = '+573203592452';
+    expect(format(testNumber), equals('+57 320 3592452'));
+    testNumber = '+573222014101';
+    expect(format(testNumber), equals('+57 322 2014101'));
+
+    testNumber = '00573203580474';
+    expect(format(testNumber), equals('00 57 320 3580474'));
+    testNumber = '00573203592452';
+    expect(format(testNumber), equals('00 57 320 3592452'));
+    testNumber = '00573222014101';
+    expect(format(testNumber), equals('00 57 322 2014101'));
+  });
+
+  test('should format with the international format when specified summit', () {
+    String format(String phoneNumber) =>
+        PhoneNumber.parse(phoneNumber, destinationCountry: IsoCode.CO)
+            .formatSummit(phoneNumber, IsoCode.SE);
+
+    var testNumber = '';
+    expect(format(testNumber), equals(''));
+
+    testNumber = '3203580474';
+    expect(format(testNumber), equals('0320 3580474'));
+    testNumber = '3203592452';
+    expect(format(testNumber), equals('0320 3592452'));
+    testNumber = '3222014101';
+    expect(format(testNumber), equals('0322 2014101'));
+
+    testNumber = '+573203580474';
+    expect(format(testNumber), equals('+57 320 3580474'));
+    testNumber = '+573203592452';
+    expect(format(testNumber), equals('+57 320 3592452'));
+    testNumber = '+573222014101';
+    expect(format(testNumber), equals('+57 322 2014101'));
+
+    testNumber = '00573203580474';
+    expect(format(testNumber), equals('00 57 320 3580474'));
+    testNumber = '00573203592452';
+    expect(format(testNumber), equals('00 57 320 3592452'));
+    testNumber = '00573222014101';
+    expect(format(testNumber), equals('00 57 322 2014101'));
+  });
+
+  test(
+      'should format with specified county code and location county for summit',
+      () async {
+    for (final testCase in testData) {
+      final result = await formatPhoneNumber(
+        testCase['number'] as String,
+        testCase['countyCode'] as String,
+        testCase['locationCounty'] as String,
+      );
+      expect(result, testCase['expect']);
+    }
+  });
+}
+
+Future<String> formatPhoneNumber(
+    String number, String countyCode, String locationCounty) async {
+  return PhoneNumber.parse(number,
+          destinationCountry: IsoCode.fromJson(countyCode))
+      .formatSummit(countyCode != locationCounty ? null : number,
+          IsoCode.fromJson(locationCounty));
 }
