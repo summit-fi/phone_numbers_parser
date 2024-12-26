@@ -62,7 +62,7 @@ class PhoneNumberFormatter {
       required IsoCode isoCode,
       required IsoCode isoCodeCountryDestination,
       required String countryCode}) {
-    if (nsn.isEmpty ) {
+    if (nsn.isEmpty) {
       return nsn;
     }
     String formattedNumber = '';
@@ -109,6 +109,7 @@ class PhoneNumberFormatter {
         }
       }
       if (localCountryCode != null &&
+          enteredNumber.startsWith(localCountryCode) &&
           !formattedNumber.startsWith(localCountryCode)) {
         formattedNumber = '$localCountryCode$formattedNumber';
       }
