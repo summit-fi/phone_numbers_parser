@@ -3348,7 +3348,7 @@
                 "format": "$1 $2"
             },
             {
-                "pattern": "(\\d{3})(\\d{7})",
+                "pattern": "(\\d{3})(\\d{3})(\\d{4})",
                 "nationalPrefixFormattingRule": "($FG)",
                 "carrierCodeFormattingRule": "$NP$CC $FG",
                 "leadingDigits": [
@@ -3357,7 +3357,7 @@
                 "format": "$1 $2"
             },
             {
-                "pattern": "(\\d{3})(\\d{7})",
+                "pattern": "(\\d{3})(\\d{3})(\\d{4})",
                 "carrierCodeFormattingRule": "$NP$CC $FG",
                 "leadingDigits": [
                     "3[0-357]|91"
@@ -3365,7 +3365,7 @@
                 "format": "$1 $2"
             },
             {
-                "pattern": "(\\d)(\\d{3})(\\d{7})",
+                "pattern": "(\\d)(\\d{3})(\\d{3})(\\d{4})",
                 "nationalPrefixFormattingRule": "$NP$FG",
                 "leadingDigits": [
                     "1"
