@@ -101,23 +101,51 @@ abstract class MetadataFinder {
     List<PhoneMetadata> potentialFits,
   ) {
     if (potentialFits.length == 1) return potentialFits[0];
-    // if the phone number is valid for a metadata return that metadata
+    
+    // Fast path: check full validation first
     for (var fit in potentialFits) {
-      final isValidForIso =
-          Validator.validateWithPattern(fit.isoCode, nationalNumber);
-      if (isValidForIso) {
+      if (Validator.validateWithPattern(fit.isoCode, nationalNumber)) {
         return fit;
       }
     }
-    // otherwise the phone number starts with leading digits of metadata
+    
+    // Fast path: check leading digits (cheapest check)
     for (var fit in potentialFits) {
       final leadingDigits = fit.leadingDigits;
       if (leadingDigits != null && nationalNumber.startsWith(RegExp(leadingDigits))) {
         return fit;
       }
     }
+    
+    // For partial numbers: try padding with common digit
+    // Get most common expected length for all countries and try once
+    final lengthsCache = <IsoCode, PhoneMetadataLengths>{};
+    int? mostCommonLength;
+    final lengthCounts = <int, int>{};
+    
+    for (var fit in potentialFits) {
+      final lengths = lengthsCache[fit.isoCode] ??= findMetadataLengthForIsoCode(fit.isoCode);
+      // Count most common length across mobile and fixedLine
+      for (final len in [...lengths.mobile, ...lengths.fixedLine]) {
+        if (len > nationalNumber.length) {
+          lengthCounts[len] = (lengthCounts[len] ?? 0) + 1;
+        }
+      }
+    }
+    
+    if (lengthCounts.isNotEmpty) {
+      // Get the most frequently occurring length
+      mostCommonLength = lengthCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+      final paddedNumber = nationalNumber.padRight(mostCommonLength, '5');
+      
+      for (var fit in potentialFits) {
+        if (Validator.validateWithPattern(fit.isoCode, paddedNumber)) {
+          return fit;
+        }
+      }
+    }
 
-    // best guess here
+    // Default fallback
     return potentialFits.firstWhere(
       (fit) => fit.isMainCountryForDialCode,
       orElse: () => potentialFits[0],
