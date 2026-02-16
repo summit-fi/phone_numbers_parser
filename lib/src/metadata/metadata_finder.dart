@@ -117,30 +117,38 @@ abstract class MetadataFinder {
       }
     }
     
-    // For partial numbers: try padding with common digit
-    // Get most common expected length for all countries and try once
-    final lengthsCache = <IsoCode, PhoneMetadataLengths>{};
-    int? mostCommonLength;
+    // For partial numbers: try padding to possible lengths
+    // Group countries by supported lengths for efficient lookup
+    final lengthToCountries = <int, List<PhoneMetadata>>{};
     final lengthCounts = <int, int>{};
     
     for (var fit in potentialFits) {
-      final lengths = lengthsCache[fit.isoCode] ??= findMetadataLengthForIsoCode(fit.isoCode);
-      // Count most common length across mobile and fixedLine
-      for (final len in [...lengths.mobile, ...lengths.fixedLine]) {
-        if (len > nationalNumber.length) {
-          lengthCounts[len] = (lengthCounts[len] ?? 0) + 1;
-        }
+      final lengths = findMetadataLengthForIsoCode(fit.isoCode);
+      final uniqueLengths = <int>{
+        ...lengths.mobile,
+        ...lengths.fixedLine,
+      }.where((len) => len > nationalNumber.length);
+      
+      for (final len in uniqueLengths) {
+        (lengthToCountries[len] ??= []).add(fit);
+        lengthCounts[len] = (lengthCounts[len] ?? 0) + 1;
       }
     }
     
-    if (lengthCounts.isNotEmpty) {
-      // Get the most frequently occurring length
-      mostCommonLength = lengthCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
-      final paddedNumber = nationalNumber.padRight(mostCommonLength, '5');
+    if (lengthToCountries.isNotEmpty) {
+      // Sort lengths by frequency (most common first)
+      final sortedLengths = lengthCounts.keys.toList()
+        ..sort((a, b) => lengthCounts[b]!.compareTo(lengthCounts[a]!));
       
-      for (var fit in potentialFits) {
-        if (Validator.validateWithPattern(fit.isoCode, paddedNumber)) {
-          return fit;
+      // Try each length, but only check countries that support it
+      for (final length in sortedLengths) {
+        final paddedNumber = nationalNumber.padRight(length, '5');
+        final relevantCountries = lengthToCountries[length]!;
+        
+        for (var fit in relevantCountries) {
+          if (Validator.validateWithPattern(fit.isoCode, paddedNumber)) {
+            return fit;
+          }
         }
       }
     }
